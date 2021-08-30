@@ -54,11 +54,12 @@ if __name__ == '__main__':
         "RRA:AVERAGE:0.5:1:1200",
         "DS:temp:GAUGE:600:-273:5000")
     try:
-        t = Proces(target=bottle.run(host='0.0.0.0', port=8080))
+        t = Process(target=run(host='0.0.0.0', port=8080))
         t.daemon = True
         t.start()
         t.join()
         h = Process(target=update_rrd())
+        h.daemon = True
         h.start()
         h.join()
 
