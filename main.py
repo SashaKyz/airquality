@@ -22,7 +22,9 @@ def serve_homepage():
                   '--title', 'Weather'
                   '--imgformat', 'PNG',
                   '--vertical-label', 'Air quality',
-                  'DEF:a=test.rrd:temp:AVERAGE')
+                  'DEF:a=test.rrd:temp:AVERAGE',
+                  'AREA:a#00FF00:Air')
+
     myData = {
       'tempVal' : temperature,
       'humidVal' : humidity,
