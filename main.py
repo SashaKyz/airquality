@@ -19,10 +19,10 @@ def serve_homepage():
     airq = getportdata()
     time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     rrdtool.graph('test.png',
+                  '--title', 'Weather'
                   '--imgformat', 'PNG',
-                  '--width', '540',
-                  '--height', '100',
-                  '--vertical-label', 'Air quality')
+                  '--vertical-label', 'Air quality',
+                  'DEF:a=test.rrd:temp:AVERAGE')
     myData = {
       'tempVal' : temperature,
       'humidVal' : humidity,
