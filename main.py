@@ -1,6 +1,7 @@
 # This is a sample Python script.
 
-from bottle import route, run, static_file, template
+from bottle import route, run, static_file, template, BaseTemplate
+import bottle
 import time
 import serial
 from datetime import datetime
