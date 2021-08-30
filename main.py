@@ -5,6 +5,7 @@ import time
 import serial
 from datetime import datetime
 import rrdtool
+import threading
 
 
 # Press Shift+F10 to execute it or replace it with your code.
@@ -39,9 +40,10 @@ def getportdata():
     return line
 
 def update_rrd():
-    newairq = getportdata()
+    newairq = getportdata().decode().strip()
     rrdtool.update("test.rrd", "N:{}".format(newairq))
     print("Update RRD db {}".format(newairq))
+    threading.Timer(300, update_rrd).start()
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -53,6 +55,7 @@ if __name__ == '__main__':
         "--step", "300",
         "RRA:AVERAGE:0.5:1:1200",
         "DS:temp:GAUGE:600:-273:5000")
+    update_rrd()
     run(host='0.0.0.0', port=8080, debug=True, reloader=True)
     print('Closing')
 
