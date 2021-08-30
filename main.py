@@ -5,7 +5,8 @@ import time
 import serial
 from datetime import datetime
 import rrdtool
-from multiprocessing import Process
+#from multiprocessing import Process
+import threading
 
 
 # Press Shift+F10 to execute it or replace it with your code.
@@ -39,6 +40,7 @@ def getportdata():
     return line
 
 def update_rrd():
+    threading.Timer(60.0, update_rrd).start()
     newairq = getportdata()
     rrdtool.update("test.rrd", "N:{}".format(newairq))
     print("Update RRD db {}".format(newairq))
@@ -54,15 +56,9 @@ if __name__ == '__main__':
         "RRA:AVERAGE:0.5:1:1200",
         "DS:temp:GAUGE:600:-273:5000")
     try:
-        t = Process(target=run(host='0.0.0.0', port=8080))
-        t.daemon = True
-        t.start()
-        t.join()
-        h = Process(target=update_rrd())
-        h.daemon = True
-        h.start()
-        h.join()
-
+        update_rrd()
+        time.sleep(120)
+        run(host='0.0.0.0', port=8080, debug=True, reloader=True)
     except KeyboardInterrupt:
         print('Closing')
         sys.stdout.write("Aborted by user.\n")
