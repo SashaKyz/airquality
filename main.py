@@ -10,6 +10,8 @@ import rrdtool
 import threading
 import sys
 
+currentAirQ = 0
+
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
@@ -17,7 +19,6 @@ import sys
 def serve_homepage():
     humidity = '{0:0.1f}'.format(45)
     temperature = '{0:0.1f}'.format(80)
-    airq = getportdata()
     time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     rrdtool.graph('static/test.png',
                   '--title', 'Weather',
@@ -29,7 +30,7 @@ def serve_homepage():
     myData = {
       'tempVal' : temperature,
       'humidVal' : humidity,
-      'airtempVal': airq,
+      'airtempVal': currentAirQ,
       'myTime' : time
      }
     return template('main.tpl', **myData)
@@ -51,10 +52,12 @@ def getportdata():
     return line
 
 def update_rrd():
+    global currentAirQ
     threading.Timer(60.0, update_rrd).start()
     newairq = getportdata()
     rrdtool.update("test.rrd", "N:{}".format(newairq))
     print("Update RRD db {}".format(newairq))
+    currentAirQ = newairq
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
