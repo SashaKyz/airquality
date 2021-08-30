@@ -34,7 +34,6 @@ def getportdata():
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=30)  # ttyACM1 for Arduino board
     if not ser.isOpen():
         ser.open()
-    print('com3 is open', ser.isOpen())
     line = ser.readline().decode().strip()
     ser.close()
     return line
@@ -43,6 +42,15 @@ def update_rrd():
     threading.Timer(60.0, update_rrd).start()
     newairq = getportdata()
     rrdtool.update("test.rrd", "N:{}".format(newairq))
+    rrdtool.graph('test.png',
+                  '--imgformat', 'PNG',
+                  '--width', '540',
+                  '--height', '100',
+                  '--start', "-%i" % YEAR,
+                  '--end', "-1",
+                  '--vertical-label', 'Air quality',
+                  '--title', 'Annual Air quality'
+    )
     print("Update RRD db {}".format(newairq))
 
 # Press the green button in the gutter to run the script.
