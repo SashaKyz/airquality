@@ -46,8 +46,6 @@ def update_rrd():
                   '--imgformat', 'PNG',
                   '--width', '540',
                   '--height', '100',
-                  '--start', "-%i" % YEAR,
-                  '--end', "-1",
                   '--vertical-label', 'Air quality',
                   '--title', 'Annual Air quality'
     )
