@@ -34,13 +34,12 @@ def getportdata():
     if not ser.isOpen():
         ser.open()
     print('com3 is open', ser.isOpen())
-    line = ser.readline()
-    print(line)
+    line = ser.readline().decode().strip()
     ser.close()
     return line
 
 def update_rrd():
-    newairq = getportdata().decode().strip()
+    newairq = getportdata()
     rrdtool.update("test.rrd", "N:{}".format(newairq))
     print("Update RRD db {}".format(newairq))
     threading.Timer(300, update_rrd).start()
