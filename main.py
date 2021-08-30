@@ -42,12 +42,12 @@ def update_rrd():
     threading.Timer(60.0, update_rrd).start()
     newairq = getportdata()
     rrdtool.update("test.rrd", "N:{}".format(newairq))
-    rrdtool.graph('test.png',
+    rrdtool.graph('test.png',{
                   '--imgformat', 'PNG',
                   '--width', '540',
                   '--height', '100',
                   '--vertical-label', 'Air quality',
-                  '--title', 'Annual Air quality'
+                  '--title', 'Annual Air quality'}
     )
     print("Update RRD db {}".format(newairq))
 
