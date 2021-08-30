@@ -7,7 +7,7 @@ from datetime import datetime
 import rrdtool
 #from multiprocessing import Process
 import threading
-
+import sys
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -57,7 +57,6 @@ if __name__ == '__main__':
         "DS:temp:GAUGE:600:-273:5000")
     try:
         update_rrd()
-        time.sleep(120)
         run(host='0.0.0.0', port=8080, debug=True, reloader=True)
     except KeyboardInterrupt:
         print('Closing')
