@@ -18,6 +18,13 @@ def serve_homepage():
     temperature = '{0:0.1f}'.format(80)
     airq = getportdata()
     time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    rrdtool.graph('test.png',
+                  '--imgformat', 'PNG',
+                  '--width', '540',
+                  '--height', '100',
+                  '--vertical-label', 'Air quality',
+                  '--title', 'Annual Air quality'
+                  )
     myData = {
       'tempVal' : temperature,
       'humidVal' : humidity,
@@ -42,13 +49,6 @@ def update_rrd():
     threading.Timer(60.0, update_rrd).start()
     newairq = getportdata()
     rrdtool.update("test.rrd", "N:{}".format(newairq))
-    rrdtool.graph('test.png',{
-                  '--imgformat', 'PNG',
-                  '--width', '540',
-                  '--height', '100',
-                  '--vertical-label', 'Air quality',
-                  '--title', 'Annual Air quality'}
-    )
     print("Update RRD db {}".format(newairq))
 
 # Press the green button in the gutter to run the script.
