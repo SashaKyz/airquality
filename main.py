@@ -29,7 +29,7 @@ def print_hi(name):
     print('Hi, {}'.format(name))  # Press Ctrl+F8 to toggle the breakpoint.
 
 def getportdata():
-    ser = serial.Serial('COM3', 115200, timeout=30)  # ttyACM1 for Arduino board
+    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=30)  # ttyACM1 for Arduino board
     if not ser.isOpen():
         ser.open()
     print('com3 is open', ser.isOpen())
