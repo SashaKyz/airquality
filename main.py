@@ -65,6 +65,8 @@ if __name__ == '__main__':
         "--step", "300",
         "RRA:AVERAGE:0.5:1:1200",
         "DS:temp:GAUGE:600:-273:5000")
+    app = bottle.default_app()
+    BaseTemplate.defaults['get_url'] = app.get_url  # reference to function
     try:
         update_rrd()
         run(host='0.0.0.0', port=8080, debug=True, reloader=True)
