@@ -5,7 +5,7 @@ import time
 import serial
 from datetime import datetime
 import rrdtool
-import threading
+from multiprocessing import Process
 
 
 # Press Shift+F10 to execute it or replace it with your code.
@@ -42,7 +42,6 @@ def update_rrd():
     newairq = getportdata()
     rrdtool.update("test.rrd", "N:{}".format(newairq))
     print("Update RRD db {}".format(newairq))
-    threading.Timer(300, update_rrd).start()
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -54,8 +53,20 @@ if __name__ == '__main__':
         "--step", "300",
         "RRA:AVERAGE:0.5:1:1200",
         "DS:temp:GAUGE:600:-273:5000")
-    update_rrd()
-    run(host='0.0.0.0', port=8080, debug=True, reloader=True)
-    print('Closing')
+    try:
+        t = Proces(target=bottle.run(host='0.0.0.0', port=8080))
+        t.daemon = True
+        t.start()
+        t.join()
+        h = Process(target=update_rrd())
+        h.start()
+        h.join()
+
+    except KeyboardInterrupt:
+        print('Closing')
+        sys.stdout.write("Aborted by user.\n")
+        sys.exit(1)
+
+
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
