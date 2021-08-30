@@ -26,7 +26,7 @@ def serve_homepage():
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    print('Hi, {}'.format(name))  # Press Ctrl+F8 to toggle the breakpoint.
 
 def getportdata():
     ser = serial.Serial('COM3', 115200, timeout=30)  # ttyACM1 for Arduino board
