@@ -22,9 +22,7 @@ def serve_homepage():
                   '--imgformat', 'PNG',
                   '--width', '540',
                   '--height', '100',
-                  '--vertical-label', 'Air quality',
-                  '--title', 'Annual Air quality'
-                  )
+                  '--vertical-label', 'Air quality')
     myData = {
       'tempVal' : temperature,
       'humidVal' : humidity,
