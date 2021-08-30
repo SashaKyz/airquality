@@ -18,7 +18,7 @@ def serve_homepage():
     temperature = '{0:0.1f}'.format(80)
     airq = getportdata()
     time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-    rrdtool.graph('test.png',
+    rrdtool.graph('static/test.png',
                   '--title', 'Weather',
                   '--imgformat', 'PNG',
                   '--vertical-label', 'Air quality',
@@ -32,6 +32,10 @@ def serve_homepage():
       'myTime' : time
      }
     return template('main.tpl', **myData)
+
+@route('/static/<filename:path>', name='static')
+def serve_static(filename):
+    return static_file(filename, root='static')
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.

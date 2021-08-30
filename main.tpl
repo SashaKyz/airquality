@@ -7,7 +7,7 @@
 <body>
     <h1>Raspberry Pi DHT22 Webserver Demo</h1>
     <p>The values below show the date, time, temperature and humidity readings from a DHT22 sensor</p>
-    <p><img src="test.png"></p>
+    <p><img src="{{ get_url('static', filename='test.png') }}"></p>
 
     <br /><br />
     <h3> Temperature ==> {{tempVal}} <sup>o</sup>C</h3>
