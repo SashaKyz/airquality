@@ -4,7 +4,7 @@ from bottle import route, run, static_file, template
 import time
 import serial
 from datetime import datetime
-#import rrdtool
+import rrdtool
 
 
 # Press Shift+F10 to execute it or replace it with your code.
@@ -40,20 +40,20 @@ def getportdata():
 
 def update_rrd():
     newairq = getportdata()
- #   rrdtool.update("test.rrd", "N:{}".format(newairq))
+    rrdtool.update("test.rrd", "N:{}".format(newairq))
     print("Update RRD db {}".format(newairq))
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
     serport = 'COM3'
-#    rrdtool.create(
-#        "test.rrd",
-#        "--start", "now",
-#        "--step", "300",
-#        "RRA:AVERAGE:0.5:1:1200",
-#        "DS:temp:GAUGE:600:-273:5000")
-    run(host='0.0.0.0', port=80, debug=True, reloader=True)
+    rrdtool.create(
+        "test.rrd",
+        "--start", "now",
+        "--step", "300",
+        "RRA:AVERAGE:0.5:1:1200",
+        "DS:temp:GAUGE:600:-273:5000")
+    run(host='0.0.0.0', port=8080, debug=True, reloader=True)
     print('Closing')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
