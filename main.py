@@ -11,8 +11,8 @@ import threading
 import sys
 
 currentAirQ = 0
-newtemp = 25
-newhumid = 45
+currentTemp = 25
+currentHumid = 45
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -29,7 +29,7 @@ def serve_homepage():
                   '--title', 'Weather',
                   '--imgformat', 'PNG',
                   '--vertical-label', 'Air quality',
-                  'DEF:a=test.rrd:temp:AVERAGE',
+                  'DEF:a=test.rrd:airq:AVERAGE',
                   'AREA:a#00FF00:Air')
 
     myData = {
@@ -54,12 +54,18 @@ def getportdata():
 
 def update_rrd():
     global currentAirQ
+    global currentTemp
+    global currentHumid
     threading.Timer(60.0, update_rrd).start()
+    newtemp = 25
+    newhum = 43
     newairq = getportdata()
-    rrdtool.update("test.rrd", "N:{}:{}:{}".format(newtemp,newhumid,newairq))
+    rrdtool.update("test.rrd", "N:{}:{}:{}".format(newtemp,newhum,newairq))
     tprint("Update RRD db {}".format(newairq))
     currentAirQ = newairq
-
+    currentTemp = newtemp
+    currentHumid = newhum
+ 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     serport = 'COM3'
