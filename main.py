@@ -15,6 +15,9 @@ currentAirQ = 0
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
+def tprint(var):
+    print(str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))+" :: "+str(var))
+
 @route('/')
 def serve_homepage():
     humidity = '{0:0.1f}'.format(45)
@@ -39,10 +42,6 @@ def serve_homepage():
 def serve_static(filename):
     return static_file(filename, root='static')
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print('Hi, {}'.format(name))  # Press Ctrl+F8 to toggle the breakpoint.
-
 def getportdata():
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=30)  # ttyACM1 for Arduino board
     if not ser.isOpen():
@@ -56,12 +55,11 @@ def update_rrd():
     threading.Timer(60.0, update_rrd).start()
     newairq = getportdata()
     rrdtool.update("test.rrd", "N:{}".format(newairq))
-    print("Update RRD db {}".format(newairq))
+    tprint("Update RRD db {}".format(newairq))
     currentAirQ = newairq
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
     serport = 'COM3'
     rrdtool.create(
         "test.rrd",
@@ -75,7 +73,7 @@ if __name__ == '__main__':
         update_rrd()
         run(host='0.0.0.0', port=8080, debug=True, reloader=True)
     except KeyboardInterrupt:
-        print('Closing')
+        tprint('Closing')
         sys.stdout.write("Aborted by user.\n")
         sys.exit(1)
 
