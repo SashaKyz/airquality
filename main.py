@@ -22,8 +22,6 @@ def tprint(var):
 
 @route('/')
 def serve_homepage():
-    humidity = '{0:0.1f}'.format(newtemp)
-    temperature = '{0:0.1f}'.format(newhumid)
     time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     rrdtool.graph('static/test.png',
                   '--title', 'Weather',
@@ -33,8 +31,8 @@ def serve_homepage():
                   'AREA:a#00FF00:Air')
 
     myData = {
-      'tempVal' : temperature,
-      'humidVal' : humidity,
+      'tempVal' : currentTemp,
+      'humidVal' : currentHumid,
       'airtempVal': currentAirQ,
       'myTime' : time
      }
