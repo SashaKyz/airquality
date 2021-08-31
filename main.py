@@ -11,6 +11,8 @@ import threading
 import sys
 
 currentAirQ = 0
+newtemp = 25
+newhumid = 45
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -20,8 +22,8 @@ def tprint(var):
 
 @route('/')
 def serve_homepage():
-    humidity = '{0:0.1f}'.format(45)
-    temperature = '{0:0.1f}'.format(80)
+    humidity = '{0:0.1f}'.format(newtemp)
+    temperature = '{0:0.1f}'.format(newhumid)
     time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     rrdtool.graph('static/test.png',
                   '--title', 'Weather',
@@ -54,7 +56,7 @@ def update_rrd():
     global currentAirQ
     threading.Timer(60.0, update_rrd).start()
     newairq = getportdata()
-    rrdtool.update("test.rrd", "N:{}".format(newairq))
+    rrdtool.update("test.rrd", "N:{}:{}:{}".format(newtemp,newhumid,newairq))
     tprint("Update RRD db {}".format(newairq))
     currentAirQ = newairq
 
@@ -65,8 +67,13 @@ if __name__ == '__main__':
         "test.rrd",
         "--start", "now",
         "--step", "60",
-        "RRA:AVERAGE:0.5:1:1200",
-        "DS:temp:GAUGE:600:-273:5000")
+        "RRA:AVERAGE:0.5:1m:24h",
+        "RRA:AVERAGE:0.5:5m:14d",
+        "RRA:AVERAGE:0.5:5h:3m",
+        "DS:temp:GAUGE:600:-273:5000",
+        "DS:humid:GAUGE:600:0:1000",
+        "DS:airq:GAUGE:600:0:1000"
+    )
     app = bottle.default_app()
     BaseTemplate.defaults['get_url'] = app.get_url  # reference to function
     try:
