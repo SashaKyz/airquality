@@ -66,8 +66,10 @@ if __name__ == '__main__':
     rrdtool.create(
         "test.rrd",
         "--start", "now",
-        "--step", "300",
-        "RRA:AVERAGE:0.5:1:1200",
+        "--step", "60",
+        "RRA:AVERAGE:0.5:1s:10d",
+        "RRA:AVERAGE:0.5:1m:90d",
+        "RRA:AVERAGE:0.5:1h:18M",
         "DS:temp:GAUGE:600:-273:5000")
     app = bottle.default_app()
     BaseTemplate.defaults['get_url'] = app.get_url  # reference to function
