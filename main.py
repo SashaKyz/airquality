@@ -11,13 +11,20 @@ import rrdtool
 #from multiprocessing import Process
 import threading
 import sys
+import Adafruit_DHT
+
 
 class currentStatus:
     AirQ = 0
     Temp = 25
+    Temp1 = 25
     Humid = 45
     Pressure = 1015.5
     Altitude = 45.8
+
+DHT_SENSOR = Adafruit_DHT.DHT22
+DHT_PIN = 4
+
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -36,13 +43,16 @@ def serve_homepage():
                   'DEF:b=test.rrd:pressure:AVERAGE',
                   'DEF:c=test.rrd:temp:AVERAGE',
                   'DEF:d=test.rrd:altitude:AVERAGE',
+                  'DEF:e=test.rrd:temp1:AVERAGE',
                   'AREA:a#00FF00:Air',
                   'AREA:b#0000FF:Pressure',
                   'AREA:c#FF0000:Temperature',
+                  'AREA:e#FF0000:Temperature1',
                   'AREA:d#00FFFF:Altitude')
 
     myData = {
       'tempVal' : currentParam.Temp,
+      'temp1Val': currentParam.Temp1,
       'humidVal' : currentParam.Humid,
       'airtempVal': currentParam.AirQ,
       'pressureVal': currentParam.Pressure,
@@ -71,10 +81,11 @@ def update_rrd():
     currentParam.Altitude = bmp280.altitude
     currentParam.Humid = 45
     currentParam.AirQ = getportdata()
-    rrdtool.update("test.rrd", "N:{}:{}:{}:{}:{}".format(currentParam.Temp, currentParam.Humid, currentParam.AirQ,
-                                                         currentParam.Pressure, currentParam.Altitude))
-    tprint("Update RRD db {}:{}:{}:{}:{}".format(currentParam.Temp, currentParam.Humid, currentParam.AirQ,
-                                                         currentParam.Pressure, currentParam.Altitude))
+    currentParam.Humid, currentParam.Temp1 = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
+    rrdtool.update("test.rrd", "N:{}:{}:{}:{}:{}:{}".format(currentParam.Temp, currentParam.Temp1, currentParam.Humid,
+                                                         currentParam.AirQ, currentParam.Pressure, currentParam.Altitude))
+    tprint("Update RRD db {}:{}:{}:{}:{}:{}".format(currentParam.Temp, currentParam.Temp1, currentParam.Humid,
+                                                 currentParam.AirQ, currentParam.Pressure, currentParam.Altitude))
  
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -87,10 +98,11 @@ if __name__ == '__main__':
         "RRA:AVERAGE:0.5:5m:14d",
         "RRA:AVERAGE:0.5:5h:90d",
         "DS:temp:GAUGE:600:-273:5000",
-        "DS:humid:GAUGE:600:0:1000",
+        "DS:temp1:GAUGE:600:-273:5000",
+        "DS:humid:GAUGE:600:-200:200",
         "DS:airq:GAUGE:600:0:2000",
-        "DS:pressure:GAUGE:600:0:2000",
-        "DS:altitude:GAUGE:600:0:2000",
+        "DS:pressure:GAUGE:600:-1000:2000",
+        "DS:altitude:GAUGE:600:-1000:2000",
     )
     app = bottle.default_app()
     BaseTemplate.defaults['get_url'] = app.get_url  # reference to function

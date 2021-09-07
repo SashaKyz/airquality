@@ -3,3 +3,4 @@ bottle~=0.12.18
 rrdtool
 threading
 adafruit-circuitpython-bmp280
+Adafruit_DHT
