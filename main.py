@@ -9,6 +9,8 @@ import rrdtool
 #from multiprocessing import Process
 import threading
 import sys
+import os.path
+
 
 currentAirQ = 0
 currentTemp = 25
@@ -24,11 +26,11 @@ def tprint(var):
 def serve_homepage():
     time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     rrdtool.graph('static/test.png',
-                  '--title', 'Weather',
+                  '--title', 'AirQuality',
                   '--imgformat', 'PNG',
                   '--vertical-label', 'Air quality',
                   'DEF:a=test.rrd:airq:AVERAGE',
-                  'AREA:a#00FF00:Air')
+                  'LINE2:a#0000FF:AirQuality')
 
     myData = {
       'tempVal' : currentTemp,
@@ -67,7 +69,8 @@ def update_rrd():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     serport = 'COM3'
-    rrdtool.create(
+    if not os.path.isfile("test.rrd"):
+      rrdtool.create(
         "test.rrd",
         "--start", "now",
         "--step", "60",
@@ -77,7 +80,7 @@ if __name__ == '__main__':
         "DS:temp:GAUGE:600:-273:5000",
         "DS:humid:GAUGE:600:0:1000",
         "DS:airq:GAUGE:600:0:2000"
-    )
+      )
     app = bottle.default_app()
     BaseTemplate.defaults['get_url'] = app.get_url  # reference to function
     try:
