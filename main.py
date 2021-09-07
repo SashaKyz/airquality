@@ -11,6 +11,8 @@ import rrdtool
 #from multiprocessing import Process
 import threading
 import sys
+import os.path
+
 import Adafruit_DHT
 
 
@@ -90,7 +92,8 @@ def update_rrd():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     serport = 'COM3'
-    rrdtool.create(
+    if not os.path.isfile("test.rrd"):
+      rrdtool.create(
         "test.rrd",
         "--start", "now",
         "--step", "60",
