@@ -3,6 +3,8 @@
 from bottle import route, run, static_file, template, BaseTemplate
 import bottle
 import time
+import board
+import adafruit_bmp280
 import serial
 from datetime import datetime
 import rrdtool
@@ -10,9 +12,12 @@ import rrdtool
 import threading
 import sys
 
-currentAirQ = 0
-currentTemp = 25
-currentHumid = 45
+class currentStatus:
+    AirQ = 0
+    Temp = 25
+    Humid = 45
+    Pressure = 1015.5
+    Altitude = 45.8
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -28,12 +33,20 @@ def serve_homepage():
                   '--imgformat', 'PNG',
                   '--vertical-label', 'Air quality',
                   'DEF:a=test.rrd:airq:AVERAGE',
-                  'AREA:a#00FF00:Air')
+                  'DEF:b=test.rrd:pressure:AVERAGE',
+                  'DEF:c=test.rrd:temp:AVERAGE',
+                  'DEF:d=test.rrd:altitude:AVERAGE',
+                  'AREA:a#00FF00:Air',
+                  'AREA:b#0000FF:Pressure',
+                  'AREA:c#FF0000:Temperature',
+                  'AREA:d#00FFFF:Altitude')
 
     myData = {
-      'tempVal' : currentTemp,
-      'humidVal' : currentHumid,
-      'airtempVal': currentAirQ,
+      'tempVal' : currentParam.Temp,
+      'humidVal' : currentParam.Humid,
+      'airtempVal': currentParam.AirQ,
+      'pressureVal': currentParam.Pressure,
+      'altitudeVal': currentParam.Altitude,
       'myTime' : time
      }
     return template('main.tpl', **myData)
@@ -51,18 +64,17 @@ def getportdata():
     return line
 
 def update_rrd():
-    global currentAirQ
-    global currentTemp
-    global currentHumid
+    global currentParam
     threading.Timer(60.0, update_rrd).start()
-    newtemp = 25
-    newhum = 43
-    newairq = getportdata()
-    rrdtool.update("test.rrd", "N:{}:{}:{}".format(newtemp,newhum,newairq))
-    tprint("Update RRD db {}".format(newairq))
-    currentAirQ = newairq
-    currentTemp = newtemp
-    currentHumid = newhum
+    currentParam.Temp = bmp280.temperature
+    currentParam.Pressure = bmp280.pressure
+    currentParam.Altitude = bmp280.altitude
+    currentParam.Humid = 45
+    currentParam.AirQ = getportdata()
+    rrdtool.update("test.rrd", "N:{}:{}:{}:{}:{}".format(currentParam.Temp, currentParam.Humid, currentParam.AirQ,
+                                                         currentParam.Pressure, currentParam.Altitude))
+    tprint("Update RRD db {}:{}:{}:{}:{}".format(currentParam.Temp, currentParam.Humid, currentParam.AirQ,
+                                                         currentParam.Pressure, currentParam.Altitude))
  
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -76,10 +88,16 @@ if __name__ == '__main__':
         "RRA:AVERAGE:0.5:5h:90d",
         "DS:temp:GAUGE:600:-273:5000",
         "DS:humid:GAUGE:600:0:1000",
-        "DS:airq:GAUGE:600:0:2000"
+        "DS:airq:GAUGE:600:0:2000",
+        "DS:pressure:GAUGE:600:0:2000",
+        "DS:altitude:GAUGE:600:0:2000",
     )
     app = bottle.default_app()
     BaseTemplate.defaults['get_url'] = app.get_url  # reference to function
+    i2c = board.I2C()  # uses board.SCL and board.SDA
+    bmp280 = adafruit_bmp280.Adafruit_BMP280_I2C(i2c, 0x76)
+    bmp280.sea_level_pressure = 1012.5
+    currentParam = currentStatus()
     try:
         update_rrd()
         run(host='0.0.0.0', port=8080, debug=True, reloader=True)
