@@ -46,11 +46,11 @@ def serve_homepage():
                   'DEF:c=test.rrd:temp:AVERAGE',
                   'DEF:d=test.rrd:altitude:AVERAGE',
                   'DEF:e=test.rrd:temp1:AVERAGE',
-                  'AREA:a#00FF00:Air',
-                  'AREA:b#0000FF:Pressure',
-                  'AREA:c#FF0000:Temperature',
-                  'AREA:e#FF0000:Temperature1',
-                  'AREA:d#00FFFF:Altitude')
+                  'LINE1:a#00FF00:Air',
+                  'LINE1:b#0000FF:Pressure',
+                  'LINE1:c#FF0000:Temperature',
+                  'LINE1:e#FF0000:Temperature1',
+                  'LINE1:d#00FFFF:Altitude')
 
     myData = {
       'tempVal' : currentParam.Temp,
