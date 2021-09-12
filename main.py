@@ -114,7 +114,7 @@ if __name__ == '__main__':
         "DS:pressure:GAUGE:600:0:2000",
         "DS:altitude:GAUGE:600:0:2000",
         "DS:humid:GAUGE:600:0:1000",
-        "DS:temp:GAUGE:600:-273:5000"
+        "DS:temp1:GAUGE:600:-273:5000"
       )
     app = bottle.default_app()
     BaseTemplate.defaults['get_url'] = app.get_url  # reference to function
