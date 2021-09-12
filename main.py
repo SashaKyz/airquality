@@ -11,10 +11,13 @@ import sys
 import os.path
 from sys import platform
 
-
-currentAirQ = 0
-currentTemp = 25
-currentHumid = 45
+class currentStatus:
+    AirQ = 0
+    Temp = 25
+    Temp1 = 25
+    Humid = 45
+    Pressure = 1015.5
+    Altitude = 45.8
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -26,16 +29,30 @@ def tprint(var):
 def serve_homepage():
     time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     rrdtool.graph('static/test.png',
-                  '--title', 'AirQuality',
+                  '--title', 'Weather',
                   '--imgformat', 'PNG',
                   '--vertical-label', 'Air quality',
                   'DEF:a=test.rrd:airq:AVERAGE',
-                  'LINE2:a#0000FF:AirQuality')
+                  'DEF:c=test.rrd:temp:AVERAGE',
+                  'DEF:b=test.rrd:pressure:AVERAGE',
+                  'DEF:d=test.rrd:altitude:AVERAGE',
+                  'DEF:f=test.rrd:humid:AVERAGE',
+                  'DEF:e=test.rrd:temp1:AVERAGE',
+                  'LINE1:a#00FF00:Air',
+                  'LINE1:b#0000FF:Pressure',
+                  'LINE1:c#FF0000:Temperature',
+                  'LINE1:e#FF0000:Temperature1',
+                  'LINE1:d#00FFFF:Altitude',
+                  'LINE1:f#FFFF00:Humid'
+                  )
 
     myData = {
-      'tempVal' : currentTemp,
-      'humidVal' : currentHumid,
-      'airtempVal': currentAirQ,
+      'tempVal' : currentParam.Temp,
+      'temp1Val': currentParam.Temp1,
+      'humidVal' : currentParam.Humid,
+      'airtempVal': currentParam.AirQ,
+      'pressureVal': currentParam.Pressure,
+      'altitudeVal': currentParam.Altitude,
       'myTime' : time
      }
     return template('main.tpl', **myData)
@@ -59,18 +76,27 @@ def getportdata():
     return line
 
 def update_rrd():
-    global currentAirQ
-    global currentTemp
-    global currentHumid
+    global currentParam
     threading.Timer(60.0, update_rrd).start()
-    newtemp = 25
-    newhum = 43
-    newairq = getportdata()
-    rrdtool.update("test.rrd", "N:{}:{}:{}".format(newtemp,newhum,newairq))
-    tprint("Update RRD db {}".format(newairq))
-    currentAirQ = newairq
-    currentTemp = newtemp
-    currentHumid = newhum
+    newmetric = getportdata().split(':')
+    if len(newmetric) >= 4:
+        currentParam.AirQ = newmetric[0]
+        currentParam.Temp = newmetric[1]
+        currentParam.Pressure = newmetric[2]
+        currentParam.Altitude = newmetric[3]
+        if len(newmetric) == 6:
+            currentParam.Humid = newmetric[4]
+            currentParam.Temp1 = newmetric[5]
+    elif len(newmetric) == 3:
+        currentParam.AirQ = newmetric[0]
+        currentParam.Humid = newmetric[1]
+        currentParam.Temp1 = newmetric[2]
+    else:
+        currentParam.AirQ = newmetric[0]
+
+    rrdtool.update("test.rrd", "N:{}:{}:{}:{}:{}:{}".format(currentParam.AirQ,currentParam.Temp,currentParam.Pressure,
+                                                            currentParam.Altitude,currentParam.Humid,currentParam.Temp1))
+    tprint("Update RRD db {}".format(newmetric))
  
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -83,9 +109,12 @@ if __name__ == '__main__':
         "RRA:AVERAGE:0.5:1m:24h",
         "RRA:AVERAGE:0.5:5m:14d",
         "RRA:AVERAGE:0.5:5h:90d",
+        "DS:airq:GAUGE:600:0:2000",
         "DS:temp:GAUGE:600:-273:5000",
+        "DS:pressure:GAUGE:600:0:2000",
+        "DS:altitude:GAUGE:600:0:2000",
         "DS:humid:GAUGE:600:0:1000",
-        "DS:airq:GAUGE:600:0:2000"
+        "DS:temp:GAUGE:600:-273:5000"
       )
     app = bottle.default_app()
     BaseTemplate.defaults['get_url'] = app.get_url  # reference to function
