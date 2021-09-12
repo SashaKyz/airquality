@@ -6,10 +6,10 @@ import time
 import serial
 from datetime import datetime
 import rrdtool
-#from multiprocessing import Process
 import threading
 import sys
 import os.path
+from sys import platform
 
 
 currentAirQ = 0
@@ -45,7 +45,13 @@ def serve_static(filename):
     return static_file(filename, root='static')
 
 def getportdata():
-    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=30)  # ttyACM1 for Arduino board
+    if platform == "linux":
+        ser = serial.Serial('/dev/ttyACM0', 115200, timeout=30)  # ttyACM0 on my raspberry pi for Arduino board
+    elif platform == "win32":
+        ser = serial.Serial('COM3', 115200, timeout=30)  # COM3 on windows
+    else:
+        tprint("Error - unknown system ")
+        exit(1)
     if not ser.isOpen():
         ser.open()
     line = ser.readline().decode().strip()
