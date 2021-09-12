@@ -16,6 +16,7 @@
     <h3> AirQuality  ==> {{airtempVal}}</h3>
     <h3> Pressure    ==> {{pressureVal}}</h3>
     <h3> Altitude    ==> {{altitudeVal}} </h3>
+    <h3> Temperature(DHT) ==> {{temp1Val}} <sup>o</sup>C</h3>
     <hr>
     <h3> Last Sensor Reading: {{myTime}} <a
 href="/"class="button">Refresh</a></h3>
