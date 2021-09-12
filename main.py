@@ -100,6 +100,7 @@ def update_rrd():
  
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    currentParam = currentStatus()
     serport = 'COM3'
     if not os.path.isfile("test.rrd"):
       rrdtool.create(
