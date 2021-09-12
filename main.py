@@ -62,17 +62,7 @@ def serve_static(filename):
     return static_file(filename, root='static')
 
 def getportdata():
-    if platform == "linux":
-        ser = serial.Serial('/dev/ttyACM0', 115200, timeout=30)  # ttyACM0 on my raspberry pi for Arduino board
-    elif platform == "win32":
-        ser = serial.Serial('COM3', 115200, timeout=30)  # COM3 on windows
-    else:
-        tprint("Error - unknown system ")
-        exit(1)
-    if not ser.isOpen():
-        ser.open()
     line = ser.readline().decode().strip()
-    ser.close()
     return line
 
 def update_rrd():
@@ -101,7 +91,15 @@ def update_rrd():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     currentParam = currentStatus()
-    serport = 'COM3'
+    if platform == "linux":
+        ser = serial.Serial('/dev/ttyACM0', 115200, timeout=30)  # ttyACM0 on my raspberry pi for Arduino board
+    elif platform == "win32":
+        ser = serial.Serial('COM3', 115200, timeout=30)  # COM3 on windows
+    else:
+        tprint("Error - unknown system ")
+        exit(1)
+    if not ser.isOpen():
+        ser.open()
     if not os.path.isfile("test.rrd"):
       rrdtool.create(
         "test.rrd",
@@ -124,6 +122,7 @@ if __name__ == '__main__':
         run(host='0.0.0.0', port=8080, debug=True, reloader=True)
     except KeyboardInterrupt:
         tprint('Closing')
+        ser.close()
         sys.stdout.write("Aborted by user.\n")
         sys.exit(1)
 
