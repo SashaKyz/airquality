@@ -19,7 +19,7 @@
     <h3> Temperature(DHT) ==> {{temp1Val}} <sup>o</sup>C</h3>
     <hr>
     <h3> Last Sensor Reading: {{myTime}} <a
-href="/"class="button">Refresh</a></h3>
+href="/weather/"class="button">Refresh</a></h3>
     <hr>
 </body>
 </html>
