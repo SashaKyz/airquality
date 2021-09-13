@@ -38,13 +38,14 @@ def serve_homepage():
                   'DEF:d=test.rrd:altitude:AVERAGE',
                   'DEF:f=test.rrd:humid:AVERAGE',
                   'DEF:e=test.rrd:temp1:AVERAGE',
-                  'CDEF:scaled_pressure=b,0.1,*',
-                  'LINE1:a#00FF00:Air',
-                  'LINE1:scaled_pressure#0000FF:Pressure',
+                  'CDEF:scaled_pressure=b,0.01,*',
+                  'CDEF:scaled_air=a,0.01,*',
+                  'AREA:scaled_air#00FF00:Air',
+                  'AREA:scaled_pressure#FFFF00:Pressure',
                   'LINE1:c#FF0000:Temperature',
                   'LINE1:e#FF0000:Temperature1',
                   'LINE1:d#00FFFF:Altitude',
-                  'LINE1:f#FFFF00:Humid'
+                  'LINE1:f#0000FF:Humid'
                   )
 
     myData = {
