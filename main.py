@@ -52,7 +52,7 @@ def serve_homepage():
                   'DEF:f=test.rrd:humid:AVERAGE',
                   'DEF:e=test.rrd:temp1:AVERAGE',
                   'LINE1:c#FF0000:Temperature',
-                  'LINE1:e#FCC000:Temperature1',
+                  'AREA:e#00FF00:Temperature1',
                   'LINE1:d#00FFFF:Altitude',
                   'LINE1:f#0000FF:Humid'
                   )
