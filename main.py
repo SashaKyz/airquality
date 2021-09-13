@@ -33,6 +33,7 @@ def serve_homepage():
                   '--imgformat', 'PNG',
                   '--lower-limit', '0',
                   '--upper-limit', '150',
+                  '--rigid',
                   'DEF:a=test.rrd:airq:AVERAGE',
                   'DEF:c=test.rrd:temp:AVERAGE',
                   'DEF:b=test.rrd:pressure:AVERAGE',
