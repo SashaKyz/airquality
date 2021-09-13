@@ -28,11 +28,22 @@ def tprint(var):
 @route('/')
 def serve_homepage():
     time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-    rrdtool.graph('static/test.png',
+    rrdtool.graph('static/main1.png',
+                  '--title', 'AirQuality',
+                  '--imgformat', 'PNG',
+                  'DEF:a=test.rrd:airq:AVERAGE',
+                  'DEF:c=test.rrd:temp:AVERAGE',
+                  'DEF:b=test.rrd:pressure:AVERAGE',
+                  'DEF:d=test.rrd:altitude:AVERAGE',
+                  'DEF:f=test.rrd:humid:AVERAGE',
+                  'DEF:e=test.rrd:temp1:AVERAGE',
+                  'AREA:a#00FF00:Air'
+                  )
+    rrdtool.graph('static/main2.png',
                   '--title', 'Weather',
                   '--imgformat', 'PNG',
                   '--lower-limit', '0',
-                  '--upper-limit', '150',
+                  '--upper-limit', '100',
                   '--rigid',
                   'DEF:a=test.rrd:airq:AVERAGE',
                   'DEF:c=test.rrd:temp:AVERAGE',
@@ -40,16 +51,22 @@ def serve_homepage():
                   'DEF:d=test.rrd:altitude:AVERAGE',
                   'DEF:f=test.rrd:humid:AVERAGE',
                   'DEF:e=test.rrd:temp1:AVERAGE',
-                  'CDEF:scaled_pressure=b,0.01,*',
-                  'CDEF:scaled_air=a,0.01,*',
-                  'AREA:scaled_air#00FF00:Air',
-                  'AREA:scaled_pressure#FFFF00:Pressure',
                   'LINE1:c#FF0000:Temperature',
                   'LINE1:e#FF0000:Temperature1',
                   'LINE1:d#00FFFF:Altitude',
                   'LINE1:f#0000FF:Humid'
                   )
-
+    rrdtool.graph('static/main3.png',
+                  '--title', 'Pressure',
+                  '--imgformat', 'PNG',
+                  'DEF:a=test.rrd:airq:AVERAGE',
+                  'DEF:c=test.rrd:temp:AVERAGE',
+                  'DEF:b=test.rrd:pressure:AVERAGE',
+                  'DEF:d=test.rrd:altitude:AVERAGE',
+                  'DEF:f=test.rrd:humid:AVERAGE',
+                  'DEF:e=test.rrd:temp1:AVERAGE',
+                  'AREA:b#FFFF00:Pressure',
+                  )
     myData = {
       'tempVal' : currentParam.Temp,
       'temp1Val': currentParam.Temp1,
