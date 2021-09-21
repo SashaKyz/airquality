@@ -13,11 +13,11 @@
     <p><img src="/weather/{{ get_url('static', filename='main3.png') }}"></p>
     <br /><br />
     <h3> Temperature(BMP280) ==> {{tempVal}} <sup>o</sup>C</h3>
-    <h3> Humidity(DHT)       ==> {{humidVal}} %</h3>
-    <h3> AirQuality(MQ3)      ==> {{airtempVal}}</h3>
-    <h3> Pressure(BMP280)    ==> {{pressureVal}}</h3>
-    <h3> AirQuality(MQ135)    ==> {{altitudeVal}} </h3>
     <h3> Temperature(DHT)    ==> {{temp1Val}} <sup>o</sup>C</h3>
+    <h3> Humidity(DHT)       ==> {{humidVal}} %</h3>
+    <h3> Pressure(BMP280)    ==> {{pressureVal}}</h3>
+    <h3> AirQuality(MQ3)      ==> {{airtempVal}}</h3>
+    <h3> AirQuality(MQ135)    ==> {{altitudeVal}} </h3>
     <hr>
     <h3> Last Sensor Reading: {{myTime}} <a
 href="/weather/"class="button">Refresh</a></h3>
