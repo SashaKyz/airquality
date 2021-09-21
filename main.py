@@ -37,7 +37,7 @@ def serve_homepage():
                   'DEF:d=test.rrd:altitude:AVERAGE',
                   'DEF:f=test.rrd:humid:AVERAGE',
                   'DEF:e=test.rrd:temp1:AVERAGE',
-                  'LINE2:a#00FF00:Air'
+                  'LINE1:a#00FF00:Air'
                   )
     rrdtool.graph('static/main2.png',
                   '--title', 'Weather',
@@ -59,13 +59,18 @@ def serve_homepage():
     rrdtool.graph('static/main3.png',
                   '--title', 'Pressure',
                   '--imgformat', 'PNG',
+		  '--slope-mode',
+                  '--alt-autoscale',
+		  '--alt-autoscale-min',
+		  '--alt-autoscale-max',
+                  '--rigid',
                   'DEF:a=test.rrd:airq:AVERAGE',
                   'DEF:c=test.rrd:temp:AVERAGE',
                   'DEF:b=test.rrd:pressure:AVERAGE',
                   'DEF:d=test.rrd:altitude:AVERAGE',
                   'DEF:f=test.rrd:humid:AVERAGE',
                   'DEF:e=test.rrd:temp1:AVERAGE',
-                  'LINE2:b#00FFFF:Pressure',
+                  'LINE1:b#00FFFF:Pressure',
                   )
     myData = {
       'tempVal' : currentParam.Temp,
