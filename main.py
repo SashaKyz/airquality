@@ -37,7 +37,8 @@ def serve_homepage():
                   'DEF:d=test.rrd:altitude:AVERAGE',
                   'DEF:f=test.rrd:humid:AVERAGE',
                   'DEF:e=test.rrd:temp1:AVERAGE',
-                  'LINE1:a#00FF00:Air'
+                  'LINE1:a#00FF00:AirQuality(MQ3)',
+                  'AREA:d#00FFFF:AirQuality(MQ135)'
                   )
     rrdtool.graph('static/main2.png',
                   '--title', 'Weather',
@@ -53,16 +54,16 @@ def serve_homepage():
                   'DEF:e=test.rrd:temp1:AVERAGE',
                   'LINE1:c#FF0000:Temperature',
                   'AREA:e#00FF00:Temperature1',
-                  'LINE1:d#00FFFF:Altitude',
+
                   'LINE1:f#0000FF:Humid'
                   )
     rrdtool.graph('static/main3.png',
                   '--title', 'Pressure',
                   '--imgformat', 'PNG',
-		  '--slope-mode',
+                  '--slope-mode',
                   '--alt-autoscale',
-		  '--alt-autoscale-min',
-		  '--alt-autoscale-max',
+                  '--alt-autoscale-min',
+                  '--alt-autoscale-max',
                   '--rigid',
                   'DEF:a=test.rrd:airq:AVERAGE',
                   'DEF:c=test.rrd:temp:AVERAGE',
@@ -90,6 +91,9 @@ def serve_static(filename):
 def getportdata():
     line = ser.readline().decode().strip()
     return line
+
+
+#smoke:temperature:pressure:smoke1:humidity:temperature
 
 def update_rrd():
     global currentParam
