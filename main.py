@@ -52,9 +52,8 @@ def serve_homepage():
                   'DEF:d=test.rrd:altitude:AVERAGE',
                   'DEF:f=test.rrd:humid:AVERAGE',
                   'DEF:e=test.rrd:temp1:AVERAGE',
-                  'LINE1:c#FF0000:Temperature',
                   'AREA:e#00FF00:Temperature1',
-
+                  'LINE1:c#FF0000:Temperature',
                   'LINE1:f#0000FF:Humid'
                   )
     rrdtool.graph('static/main3.png',
