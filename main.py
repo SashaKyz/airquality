@@ -37,7 +37,7 @@ def serve_homepage():
                   'DEF:d=test.rrd:altitude:AVERAGE',
                   'DEF:f=test.rrd:humid:AVERAGE',
                   'DEF:e=test.rrd:temp1:AVERAGE',
-                  'LINE1:a#CAFF00:AirQuality(MQ3)',
+                  'LINE1:a#FF0000:AirQuality(MQ3)',
                   'AREA:d#00FFFF:AirQuality(MQ135)'
                   )
     rrdtool.graph('static/main2.png',
